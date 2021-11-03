@@ -1,0 +1,63 @@
+html {
+  font-family: 'Noto Sans', sans-serif;
+}
+
+body {
+  text-align: center;
+}
+
+#main-body-div {
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#clock {
+  width: 300px;
+  height: 75px;
+  background-color: rgb(15, 15, 15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#time {
+  color: white;
+  font-size: 36px;
+}
+
+#workshift-functions {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: auto;
+  margin: 10px 0px 10px 0px;
+}
+
+#workshift-functions > button {
+  margin-top: 5px;
+  width: 200px;
+}
+
+#workshift-table-div {
+  margin-top: 5px;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  align-content: space-around;
+  width: 1000px;
+  height: auto;
+}
+
+#workshift-table {
+  background-color: blue;
+}
+
+#workshift-table > th {
+  padding: 0px 5px 0px 5px;
+}
