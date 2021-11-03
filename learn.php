@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style.css">
     <script>
       setInterval(() => {
         $('#time').html(Date().substring(16, 25))
@@ -106,13 +106,50 @@
 
           } break;
         }
+
+        function cleanTable() {
+          const newTable = `
+              <tbody><tr>
+                <th> Entrada </th>
+                <th> Saída para almoço </th>
+                <th> Retorno do almoço </th>
+                <th> Saída </th>
+              </tr>
+            </tbody>
+          `;
+          $('#workshift-table').html(newTable);
+        }
+
+        async function saveDataOnBank() {
+          const tableData = $('#workshift-table > tr > td').map(cell => {
+            return $(cell).val();
+          })
+          await $.post(`./function.php?data=1&tableData=${tableData}`);
+        }
+
+        async function loadDataFromBank() {
+          const tableData = $.get('./function.php?data=GET_SHIFT_TIMES');
+          let i = 1;
+          tableData.forEach(cell => {
+            time = cell;
+            cleanTable();
+            refreshTable(i);
+            i++;
+            if (i > 4) i = 1;
+          })
+        }
       }
     </script>
   </head>
   <body>
 
     <?php
-      include("function.php")
+      include("function.php");
+
+      $databaseConnection = connectToDatabase();
+      if ($databaseConnection != 'OK') {
+        echo "alert($databaseConnection);";
+      }
     ?>
 
     <div id="main-body-div">
@@ -126,19 +163,24 @@
       </div>  
 
       <div id="workshift-functions">
-        <button id="beginShift" onclick="saveEnterShift()">Bater ponto de entrada</button>
-        <button id="goToLunch" onclick="saveEnterLunch()">Bater saída para almoço</button>
-        <button id="backFromLunch" onclick="saveEndLunch()">Bater retorno do almoço</button>
-        <button id="endShift" onclick="saveEndShift()">Bater ponto de saída</button>
+        <button id="beginShift" onclick="saveEnterShift()">Entrada</button>
+        <button id="goToLunch" onclick="saveEnterLunch()">Almoço</button>
+        <button id="backFromLunch" onclick="saveEndLunch()">Saída do almoço</button>
+        <button id="endShift" onclick="saveEndShift()">Saída</button>
+      </div>
+
+      <div id="workshift-databank">
+        <button id="saveData" onclick="saveDataOnBank()">Salvar Dados</button>
+        <button id="loadData" onclick="loadDataFromBank()">Carregar Dados</button>
       </div>
 
       <div id="workshift-table-div">
         <table id="workshift-table">
           <tr>
-            <th> Entrada no serviço </th>
+            <th> Entrada </th>
             <th> Saída para almoço </th>
-            <th> Retorno para almoço </th>
-            <th> Saída do serviço </th>
+            <th> Retorno do almoço </th>
+            <th> Saída </th>
           </tr>
         </table>
       </div>

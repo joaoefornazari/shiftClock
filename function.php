@@ -7,6 +7,31 @@
 
   $listOfTimes[] = "";
 
+  $conn = null;
+  $sqlQuery = "";
+
+  function connectToDatabase() {
+    global $conn, $sql;
+
+    $servername = "localhost";
+    $username = "root";
+    $password = "";
+
+    $conn = new mysqli($servername, $username, $password);
+  
+    if ($conn->connect_error) {
+      die("Connection failed: " . $conn->connect_error);
+    }
+
+    $sqlQuery = "USE test;";
+
+    if ($conn->query($sql) === FALSE) {
+      echo "Error connecting to database: " . $conn->error;
+    }
+
+    echo "OK";
+  }
+
   setlocale(LC_ALL, array('pt_BR', 'pt_br.UTF-8'));
   date_default_timezone_set("America/Campo_Grande");
 
@@ -30,6 +55,9 @@
       $endShiftTime = getTime();
       array_push($listOfTimes, $endShiftTime);
       echo $endShiftTime;
+    }
+    if ($_REQUEST["data"] == 5) {
+      
     }
   }
 
