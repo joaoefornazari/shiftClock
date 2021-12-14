@@ -23,10 +23,4 @@ A simple PHP project that tracks a full-time working shift with lunch interval.
 
 7. On the URL bar, type "localhost/testing-php" and hit Enter.
 
-8. You'll see something like that:
-
-![Screenshot - Folders](screenshots/php-project.PNG)
-
-8.1: Double-click "learn.php" or simply add "/learn.php" to the URL string at the URL bar.
-
-8.2: Done!
+Done!
