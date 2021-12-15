@@ -10,13 +10,14 @@
 	setlocale(LC_ALL, array('pt_BR', 'pt_br.UTF-8'));
   date_default_timezone_set("America/Sao_Paulo");
 
+	// Connect to MySQL
 	try {
 		$conn = new PDO("mysql:host=$hostname;", $user, $password);
 	} catch (Exception $e) {
 		print "ERROR PDO_NEW_CONN:" . $e->getMessage() . "<br/>";
 	}
 
-
+	// Create database
 	try {
 		$conn->exec("CREATE DATABASE IF NOT EXISTS $dbname;
 			CREATE USER IF NOT EXISTS `$user`@`localhost` IDENTIFIED BY '$password';
@@ -26,12 +27,14 @@
 		print "ERROR CREATE_DB: " . $e->getMessage() . "<br/>";
 	}
 
+	// Use database
 	try {
 		$conn->exec("USE $dbname;");
 	} catch (Exception $e) {
 		print "ERROR USE_DB: " . $e->getMessage() . "<br/>";
 	}
 
+	// Create table
 	try {	
 		$conn->exec("CREATE TABLE IF NOT EXISTS shift_register(
 			START_TIME VARCHAR(15) NOT NULL,
@@ -50,8 +53,12 @@
 		if (isset($_REQUEST["clock"])) {
 			if ($_REQUEST["clock"] == "true") {
 			
+				// Select shift times from table
+				$today = date("Y-m-d");
 				try {
-					$stmt = $conn->prepare("SELECT * FROM shift_register");
+					$stmt = $conn->prepare("SELECT * FROM shift_register WHERE SHIFT_DATE = STR_TO_DATE(:today, '%Y-%m-%d')");
+
+					$stmt->bindParam(":today", $today);
 					$stmt->execute();
 				} catch (Exception $e) {
 					print "ERROR SELECT_shiftr: " . $e.getMessage() . "<br/>";
@@ -79,6 +86,7 @@
 			if (isset($_POST["begin"])) {
 
 				$column = "START_TIME";
+				// Insert start shift time on table
 				try {
 					$stmt = $conn->prepare("INSERT INTO shift_register($column, SHIFT_DATE)
 						VALUES (:hour, STR_TO_DATE(:shift_time, '%Y-%m-%d'));");
