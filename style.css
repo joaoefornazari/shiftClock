@@ -49,6 +49,15 @@ button {
   min-height: 40px;
 }
 
+#option-list {
+	min-width: 100px;
+	margin-top: 10px;
+	height: 50px;
+	min-width: 150px;
+	padding: 5px;
+	background-color: rgb(226, 224, 224);
+}
+
 #workshift-table-div {
   margin-top: 5px;
   display: flex;

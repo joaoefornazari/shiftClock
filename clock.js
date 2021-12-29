@@ -65,8 +65,8 @@ function refreshTable(column) {
 	switch (column) {
 		case COLUMN.BEGIN_SHIFT: {
 
-			if (formerColumn !== COLUMN.END_SHIFT) {
-				alert("Encerre o turno antes de registrar entrada novamente!");
+			if (formerColumn === COLUMN.BEGIN_SHIFT) {
+				alert("Este horário já foi registrado!");
 				return null;
 			}
 
@@ -77,6 +77,8 @@ function refreshTable(column) {
 			cell.appendChild(document.createTextNode(time));
 			formerColumn = COLUMN.BEGIN_SHIFT;
 
+			$('#beginShift').attr('disabled', true);
+
 			return 1;
 			
 		} break;
@@ -84,14 +86,21 @@ function refreshTable(column) {
 		case COLUMN.BEGIN_LUNCH: {
 
 			if (formerColumn !== COLUMN.BEGIN_SHIFT) {
-				alert("Inicie o turno antes de registrar saída para almoço!");
-				return null;
+				if (formerColumn === COLUMN.BEGIN_LUNCH) {
+					alert("Este horário já foi registrado!");
+					return null;
+				} else {
+					alert("Registre o início do almoço para registrar o final!");
+					return null;
+				}	
 			}
 
 			const cell = row.insertCell(column-1);
 			
 			cell.appendChild(document.createTextNode(time));
 			formerColumn = COLUMN.BEGIN_LUNCH;
+
+			$('#goToLunch').attr('disabled', true);
 
 			return 1;
 								
@@ -100,14 +109,21 @@ function refreshTable(column) {
 		case COLUMN.END_LUNCH: {
 
 			if (formerColumn !== COLUMN.BEGIN_LUNCH) {
-				alert("Inicie o almoço antes de encerrá-lo!");
-				return null;
-			}
+				if (formerColumn === COLUMN.END_LUNCH) {
+					alert("Este horário já foi registrado!");
+					return null;
+				} else {
+					alert("Registre o início do almoço para registrar o final!");
+					return null;
+				}				
+			}			
 
 			const cell = row.insertCell(column-1);
 			
 			cell.appendChild(document.createTextNode(time));
 			formerColumn = COLUMN.END_LUNCH;
+
+			$('#backFromLunch').attr('disabled', true);
 			
 			return 1;
 
@@ -116,14 +132,21 @@ function refreshTable(column) {
 		case COLUMN.END_SHIFT: {
 
 			if (formerColumn !== COLUMN.END_LUNCH) {
-				alert("Encerre o almoço antes de encerrar o turno!");
-				return null;
-			}
+				if (formerColumn === COLUMN.END_SHIFT) {
+					alert("Este horário já foi registrado!");
+					return null;
 
+				} else {
+					alert("Encerre o almoço antes de encerrar o turno!");
+					return null;
+				}
+			}
 			const cell = row.insertCell(column-1);
 			
 			cell.appendChild(document.createTextNode(time));
 			formerColumn = COLUMN.END_SHIFT;
+
+			$('#endShift').attr('disabled', true);
 
 			return 1;
 
@@ -144,34 +167,29 @@ function cleanTable() {
 	$('#workshift-table').html(newTable);
 }
 
-async function saveDataOnBank() {
-	const tableData = $('#workshift-table > tr > td').map(cell => {
-		return $(cell).val();
-	})
-	await $.post(`./function.php?data=1&tableData=${tableData}`);
-}
-
 async function loadDataFromBank() {
 	const data = await $.get('./dbconnect.php?clock=true');
 	const jsonTimes = JSON.parse(data.split("=")[0]);
+
+	console.log(jsonTimes);
 	
-	if (jsonTimes.START_TIME !== '') {
+	if (jsonTimes.START_TIME !== '' && typeof jsonTimes.FINISH_TIME !== 'undefined') {
 		time = jsonTimes.START_TIME;
 		refreshTable(COLUMN.BEGIN_SHIFT);
 	}
 
-	if (jsonTimes.LUNCH_TIME !== '') {
+	if (jsonTimes.LUNCH_TIME !== '' && typeof jsonTimes.FINISH_TIME !== 'undefined') {
 		time = jsonTimes.LUNCH_TIME;
 		refreshTable(COLUMN.BEGIN_LUNCH);
 	}
 
-	if (jsonTimes.END_LUNCH_TIME !== '') {
+	if (jsonTimes.END_LUNCH_TIME !== '' && typeof jsonTimes.FINISH_TIME !== 'undefined') {
 		time = jsonTimes.LUNCH_TIME;
 		refreshTable(COLUMN.END_LUNCH);
 	}
 
-	if (jsonTimes.FINISH_TIME !== '') {
-		time = jsonTimes.END_SHIFT;
+	if (jsonTimes.FINISH_TIME !== '' && typeof jsonTimes.FINISH_TIME !== 'undefined') {
+		time = jsonTimes.FINISH_TIME;
 		refreshTable(COLUMN.END_SHIFT);
 	}
 }

@@ -48,13 +48,13 @@
 	}
 
 	$stmt;
+	$today = date("Y-m-d");
 
 	if ($_SERVER["REQUEST_METHOD"] == "GET") {
 		if (isset($_REQUEST["clock"])) {
 			if ($_REQUEST["clock"] == "true") {
 			
 				// Select shift times from table
-				$today = date("Y-m-d");
 				try {
 					$stmt = $conn->prepare("SELECT * FROM shift_register WHERE SHIFT_DATE = STR_TO_DATE(:today, '%Y-%m-%d')");
 
@@ -82,7 +82,6 @@
 
 	if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		if ($_SERVER["PATH_INFO"] == "/insertTime") {
-			$today = date("Y-m-d");
 			if (isset($_POST["begin"])) {
 
 				$column = "START_TIME";
@@ -104,6 +103,7 @@
 			if (isset($_POST["startLunch"])) {
 				$column = "LUNCH_TIME";
 
+				// Insert lunch time on table
 				try {
 					$stmt = $conn->prepare("UPDATE shift_register
 						SET $column = :hour
@@ -123,6 +123,7 @@
 			if (isset($_POST["endLunch"])) {
 				$column = "END_LUNCH_TIME";
 
+				// Insert end lunch time on table
 				try {
 					$stmt = $conn->prepare("UPDATE shift_register
 						SET $column = :hour
@@ -142,6 +143,7 @@
 			if (isset($_POST["end"])) {
 				$column = "FINISH_TIME";
 
+				// Insert end shift time on table
 				try {
 					$stmt = $conn->prepare("UPDATE shift_register
 						SET $column = :hour

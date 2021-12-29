@@ -30,13 +30,18 @@
         <div id="clock">
           <span id="time"></span>
         </div>
+				<select id="option-list">
+					<option>Selecione uma opção...</option disabled>
+					<option>Exportar para Excel</option>
+					<option>Permitir intervalos</option>
+				</select>
       </div>  
 
       <div id="workshift-functions">
-        <button id="beginShift" onclick="saveShiftTime(1)">Entrada</button>
-        <button id="goToLunch" onclick="saveShiftTime(2)">Almoço</button>
-        <button id="backFromLunch" onclick="saveShiftTime(3)">Saída do almoço</button>
-        <button id="endShift" onclick="saveShiftTime(4)">Saída</button>
+        <button class="shift-buttons" id="beginShift" onclick="saveShiftTime(1)">Entrada</button>
+        <button class="shift-buttons" id="goToLunch" onclick="saveShiftTime(2)">Almoço</button>
+        <button class="shift-buttons" id="backFromLunch" onclick="saveShiftTime(3)">Saída do almoço</button>
+        <button class="shift-buttons" id="endShift" onclick="saveShiftTime(4)">Saída</button>
       </div>
 
       <div id="workshift-table-div">
